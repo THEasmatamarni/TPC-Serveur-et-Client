@@ -1,0 +1,34 @@
+import java.io.*;
+import java.net.*;
+
+public class TCPServer {
+    public static void main(String[] args) {
+        ServerSocket serverSocket = null;
+
+        try {
+            serverSocket = new ServerSocket(6789);
+
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+
+                BufferedReader inFromClient = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                DataOutputStream outToClient = new DataOutputStream(clientSocket.getOutputStream());
+
+                String clientMessage = inFromClient.readLine();
+                System.out.println("Received from client: " + clientMessage);
+
+                String responseMessage = "Message received!";
+                outToClient.writeBytes(responseMessage + '\n');
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (serverSocket != null)
+                    serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
